@@ -1,14 +1,25 @@
-import psycopg2
 import pandas as pd
 from utils import ENVIRONMENTAL_VARIABLES, gen_uuid_list
 class DatabaseConector:
-    def __init__(self):
-        self.db_conn = psycopg2.connect(host=ENVIRONMENTAL_VARIABLES['DB_HOST'],
+    def __init__(self, database_type='PostgreSQL'):
+        connect = self.__get_engine(database_type)
+        self.db_conn = connect(host=ENVIRONMENTAL_VARIABLES['DB_HOST'],
                                         port=ENVIRONMENTAL_VARIABLES['DB_PORT'],
                                         dbname=ENVIRONMENTAL_VARIABLES['DB_NAME'],
                                         user=ENVIRONMENTAL_VARIABLES['DB_USER'],
                                         password=ENVIRONMENTAL_VARIABLES['DB_PASS'])
         self.db_cursor = self.db_conn.cursor()
+
+    @staticmethod
+    def __get_engine(database_type):
+        if database_type.lower() == 'postgresql':
+            import psycopg2
+            return psycopg2.connect
+        elif database_type.lower() == 'mysql':
+            import mysql.connector
+            return mysql.connector.connect
+        else:
+            raise Exception('Only supported databases are PostgreSQL and MySQL')
     
     def run_query(self, query_str, fields = []):
         '''

@@ -11,8 +11,6 @@ def load_config(config_file):
 def get_details_from_environment():
     required_fields = ['DB_NAME','DB_HOST', 'DB_USER', 'DB_PORT', 'DB_PASS', 
                         'rule_devalidation_api']
-                        # , 'numer_of_days_to_be_parsed', 
-                        # 'threshold_number_of_paid_claims']
     if not set(required_fields) <= set(os.environ):
         print('The following fields must be present in the environment')
         print('\n'.join(required_fields))
